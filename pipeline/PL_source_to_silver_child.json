@@ -43,7 +43,7 @@
 				"typeProperties": {
 					"variableName": "start_time",
 					"value": {
-						"value": "@formatDateTime(utcNow(),'2026-11-11_08:58:58')",
+						"value": "@formatDateTime(utcNow(),'yyyy-MM-dd_hh:mm:ss')",
 						"type": "Expression"
 					}
 				}
@@ -152,6 +152,43 @@
 							"type": "Expression"
 						},
 						"source_table": {
+							"value": "@activity('get_table_details').output.firstRow.source_table_name",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricks1",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "bronze_to_silver",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "landing_to_bronze",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/careHealth-repo/CareHealth-adb-repo/bronze_to_silver",
+					"baseParameters": {
+						"landing_timestamp": {
+							"value": "@variables('start_time')",
+							"type": "Expression"
+						},
+						"table_name": {
 							"value": "@activity('get_table_details').output.firstRow.source_table_name",
 							"type": "Expression"
 						}
