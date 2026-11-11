@@ -119,7 +119,7 @@
 								{
 									"activity": "sourceToSilver",
 									"dependencyConditions": [
-										"Succeeded"
+										"Failed"
 									]
 								}
 							],
