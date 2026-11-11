@@ -53,8 +53,6 @@
 						{
 							"name": "sourceToSilver",
 							"type": "ExecutePipeline",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "InProgress",
@@ -76,6 +74,10 @@
 								"parameters": {
 									"table_id": {
 										"value": "@item().table_id ",
+										"type": "Expression"
+									},
+									"adf_id": {
+										"value": "@pipeline().parameters.adf_runid",
 										"type": "Expression"
 									}
 								}
@@ -102,7 +104,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "insert into ctrl.audit_log(adf_run_id,table_id,stage,start_time)\nvalues(pipeline().RunId,@{item().table_id},'In Progress',@{utcNow()})",
+											"value": "insert into ctrl.audit_log(adf_run_id,table_id,stage,start_time)\nvalues(@{pipeline().parameters.adf_runid},@{item().table_id},'In Progress',@{utcNow()})",
 											"type": "Expression"
 										}
 									}
@@ -111,7 +113,7 @@
 							}
 						},
 						{
-							"name": "Completed",
+							"name": "Failed",
 							"type": "Script",
 							"dependsOn": [
 								{
@@ -138,7 +140,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "insert into ctrl.audit_log(adf_run_id,table_id,stage,start_time)\nvalues(pipeline().RunId,@{item().table_id},'In Progress',@{utcNow()})",
+											"value": "update table ctrl.audit_log\nset status='Failed', end_time=SYSUTCDATETIME\nwhere adf_run_id=@{pipeline().parameters.adf_runid} and table_id =@{item().table_id}",
 											"type": "Expression"
 										}
 									}
