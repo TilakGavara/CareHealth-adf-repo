@@ -104,7 +104,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "insert into ctrl.audit_log(adf_run_id,table_id,stage,start_time)\nvalues(@{pipeline().parameters.adf_runid},@{item().table_id},'In Progress',@{utcNow()})",
+											"value": "insert into ctrl.audit_log(adf_run_id,table_id,stage,status,start_time)\nvalues(@{pipeline().parameters.adf_runid},@{item().table_id},'Source_to_Silver','In Progress',@{utcNow()})",
 											"type": "Expression"
 										}
 									}
