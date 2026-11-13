@@ -53,13 +53,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "get_table_details",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "set_timestamp",
+						"activity": "CheckLoadType",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -236,42 +230,23 @@
 				}
 			},
 			{
-				"name": "If Condition1",
+				"name": "CheckLoadType",
 				"type": "IfCondition",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"ifTrueActivities": [
-						{
-							"name": "Lookup1",
-							"type": "Lookup",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"source": {
-									"type": "PostgreSqlV2Source",
-									"query": {
-										"value": "select count(1) from ctrl.table_config where table_id=@{pipeline().parameters.table_id} and load_type='MERGE'",
-										"type": "Expression"
-									},
-									"queryTimeout": "01:00:00"
-								},
-								"dataset": {
-									"referenceName": "DS_PostgresSQL",
-									"type": "DatasetReference"
-								},
-								"firstRowOnly": false
-							}
-						}
-					]
-				}
+				"dependsOn": [
+					{
+						"activity": "get_table_details",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "set_timestamp",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": []
 			}
 		],
 		"parameters": {
